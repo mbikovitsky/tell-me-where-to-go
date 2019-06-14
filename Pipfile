@@ -16,3 +16,6 @@ aiohttp = "*"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+main = "./tell_me_where_to_go.py"
