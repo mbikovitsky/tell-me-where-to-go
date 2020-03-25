@@ -32,6 +32,8 @@ def main():
                 pass
             else:
                 raise
+        else:
+            break
 
 
 def parse_command_line():
