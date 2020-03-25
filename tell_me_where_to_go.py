@@ -14,17 +14,24 @@ def main():
 
     args = parse_command_line()
 
-    bot = Bot(args.token)
-    dispatcher = Dispatcher(bot)
+    while True:
+        try:
+            bot = Bot(args.token)
+            dispatcher = Dispatcher(bot)
 
-    @dispatcher.message_handler(commands=("get_ip",))
-    async def handler(message: types.Message):  # pylint: disable=W0612
-        if not is_allowed(message.chat.id, args.allowed_clients, args.setup):
-            return
+            @dispatcher.message_handler(commands=("get_ip",))
+            async def handler(message: types.Message):  # pylint: disable=W0612
+                if not is_allowed(message.chat.id, args.allowed_clients, args.setup):
+                    return
 
-        await bot.send_message(message.chat.id, await get_ip_address())
+                await bot.send_message(message.chat.id, await get_ip_address())
 
-    executor.start_polling(dispatcher, skip_updates=True)
+            executor.start_polling(dispatcher, skip_updates=True)
+        except:
+            if args.persist:
+                pass
+            else:
+                raise
 
 
 def parse_command_line():
@@ -39,6 +46,9 @@ def parse_command_line():
                         help="Allow anyone to query the bot. "
                              "All clients will be added to the "
                              "allowed database.")
+    parser.add_argument("--persist",
+                        action="store_true",
+                        help="Don't quit on exception")
 
     return parser.parse_args()
 
